@@ -1,0 +1,25 @@
+<section class="song-header">
+    <h1>{{ song.header.title }}</h1>
+</section>
+<section class="song-body">
+    {% for verse in song.data %}
+        <p>{{ verse.raw_slide | replace('\n', '<br>') | replace('{su}', '<sup>') | replace('{/su}', '</sup>') }}</p>
+    {% endfor %}
+</section>
+<section class="song-footer">
+    <p>
+        {% for footer in song.header.footer %}
+           {{ footer }}
+        {% endfor %}
+    </p>
+    <p>
+        {% if song.header.data.ccli_number is defined %}
+            <strong>CCLI:</strong>
+            {% if song.header.data.ccli_number == None %}
+                Unknown
+            {% else %}
+                {{ song.header.data.ccli_number }}
+            {% endif %}
+        {% endif %}
+    </p>
+</section>
