@@ -2,13 +2,27 @@
 <html>
 <head>
     <title>{{ title }}</title>
+    <style>
+      body {
+        font-family: Helvetica,Roboto,Ubuntu,Calibri,Arial,sans-serif;
+      }
+      section.song-header {
+        font-size: 1.2rem;
+      }
+      section.song-body {
+        font-size: 1.2rem;
+      }
+      section.song-footer {
+        font-size: 0.8rem;
+      }
+    </style>
 </head>
 <body>
     <h1>{{ title }}</h1>
-    <ul>
+    <section class="song">
         {% for song in songs %}
             {{ song }}
         {% endfor %}
-    </ul>
+    </section>
 </body>
 </html>

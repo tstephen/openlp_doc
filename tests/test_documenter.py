@@ -8,21 +8,21 @@ from pathlib import Path
 
 import pytest
 
-from openlp_doc.documenter import BpmDocumenterOptions, Documenter
+from openlp_doc.documenter import DocumenterOptions, Documenter
 
 @pytest.fixture(name="documenter", scope="session")
-def init_validator():
+def init_documenter():
     """ initialise service class instance """
     logging.basicConfig()
     options = {
         'verbose': 0
     }
-    validator = Documenter(BpmDocumenterOptions(**options))
-    return validator
+    documenter = Documenter(DocumenterOptions(**options))
+    return documenter
 
 def test_render_service(documenter):
     """tests known service resource produces expected output"""
-    output = documenter.render_service("./tests/resources/service_data.osj")
+    output = documenter.render_service("./tests/resources/Service 2024-01-28 01-07.osz")
     assert output is not None
 
 @pytest.mark.skip(reason="no way of currently testing this")

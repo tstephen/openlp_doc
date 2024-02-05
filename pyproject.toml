@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "openlp-song-sheet"
+name = "openlp-doc"
 version = "0.1.0"
 description = "Transform OpenLP song and service data into web content"
 authors = ["Tim Stephenson <tim@knowprocess.com>"]

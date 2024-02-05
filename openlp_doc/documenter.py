@@ -1,12 +1,14 @@
 """
 documenter.py
 """
+import io
 from jinja2 import Environment, FileSystemLoader
 import json
+import zipfile
 
 from pydantic import BaseModel
 
-class BpmDocumenterOptions(BaseModel):
+class DocumenterOptions(BaseModel):
     """ options expected by Documenter """
     verbose: int = 2 
 
@@ -23,14 +25,15 @@ class Documenter():
     def render_service(self, osj_file: str):
         """render a service from its JSON representation"""
         songs = []
-        with open(osj_file) as f:
-            service = json.load(f)
-            assert service is not None
-            for idx, obj in enumerate(service):
-                if obj.get('serviceitem') is not None:
-                    songs.append(self.render_song_json(obj.get('serviceitem')))
-                else:
-                    print(f'not a service item: {obj}')
+
+        with zipfile.ZipFile(osj_file) as zf:
+            with io.TextIOWrapper(zf.open("service_data.osj"), encoding="utf-8") as f:
+                service = json.load(f)
+                for idx, obj in enumerate(service):
+                    if obj.get('serviceitem') is not None:
+                        songs.append(self.render_song_json(obj.get('serviceitem')))
+                    else:
+                        print(f'not a service item: {obj}')
 
         output = self.service_template.render(service=service, songs=songs)
         with open('output.html', 'w') as output_file:
