@@ -5,7 +5,7 @@ import subprocess
 
 def tests():
     """
-    Run all unittests. Equivalent to:
+    Run all unit tests. Equivalent to:
     `poetry run coverage run --omit */site-packages/*,tests/* -m pytest tests/`
     """
     subprocess.run(

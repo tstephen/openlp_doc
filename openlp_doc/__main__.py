@@ -1,6 +1,5 @@
 """
 __main__.py
-Main entry point
 """
 import argparse
 from getpass import getpass
@@ -17,7 +16,7 @@ def help(parser):
     parser.print_help()
 
 def main():
-    '''Main entry point to kpctl'''
+    '''Main entry point to app'''
 
     parser = argparse.ArgumentParser(prog="openlp_doc", add_help=False)
     # parser.add_argument("-f", "--force", help="overwrite existing files",
