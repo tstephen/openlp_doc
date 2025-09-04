@@ -2,3 +2,6 @@
 __pycache__
 dist
 output.html
+tests/resources/*html
+tests/resources/*pdf
+

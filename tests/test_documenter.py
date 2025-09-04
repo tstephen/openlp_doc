@@ -4,6 +4,7 @@ test_documenter.py
 import json
 import logging
 import os
+from os.path import isfile
 from pathlib import Path
 
 import pytest
@@ -24,6 +25,8 @@ def test_render_service(documenter):
     """tests known service resource produces expected output"""
     output = documenter.render_service("./tests/resources/Service 2024-01-28 01-07.osz")
     assert output is not None
+    assert isfile("./tests/resources/Service 2024-01-28 01-07.html")
+    assert isfile("./tests/resources/Service 2024-01-28 01-07.pdf")
 
 #@pytest.mark.skip(reason="no way of currently testing this")
 def test_render_song(documenter):

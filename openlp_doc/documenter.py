@@ -4,8 +4,10 @@ documenter.py
 import io
 from jinja2 import Environment, FileSystemLoader
 import json
+from os.path import splitext
 import zipfile
 
+import pdfkit
 from pydantic import BaseModel
 
 class DocumenterOptions(BaseModel):
@@ -36,10 +38,13 @@ class Documenter():
                         print(f'not a service item: {obj}')
 
         output = self.service_template.render(service=service, songs=songs)
-        with open('output.html', 'w') as output_file:
+        out_file = splitext(osj_file)[0]
+        with open(f'{out_file}.html', 'w') as output_file:
             output_file.write(output)
 
-        print('HTML generation successful. Output saved to "output.html".')
+        print(f"HTML generation successful. Output saved to '{out_file}.html'.")
+        pdfkit.from_file(f"{out_file}.html", f"{out_file}.pdf", verbose=True, options={"enable-local-file-access": True})
+        print(f"PDF generation successful. Output saved to '{out_file}.pdf'.")
         return output
 
     def render_song_json(self, serviceitem: dict):
