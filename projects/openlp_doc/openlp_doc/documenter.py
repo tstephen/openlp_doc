@@ -26,7 +26,10 @@ class Documenter:
 
     def __init__(self, options):
         self.options = options
-        self.env = Environment(loader=FileSystemLoader("./openlp_doc/templates"))
+        import os
+
+        template_dir = os.path.join(os.path.dirname(__file__), "templates")
+        self.env = Environment(loader=FileSystemLoader(template_dir))
         self.song_template = self.env.get_template("serviceitem.html")
         self.service_template = self.env.get_template("service.html")
         self.slides_template = self.env.get_template("slides.html")

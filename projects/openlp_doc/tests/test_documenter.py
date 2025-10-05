@@ -9,7 +9,6 @@ from os.path import isfile
 from pathlib import Path
 
 import pytest
-
 from openlp_doc.documenter import Documenter, DocumenterOptions
 
 
