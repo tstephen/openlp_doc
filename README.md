@@ -7,4 +7,3 @@ So it assumes you have poetry installed.
 Run with `poetry run openlp_doc <service file>`.
 For example:
 `poetry run openlp_doc tests/resources/Service\ 2024-01-20\ 23-43.osz`
-
