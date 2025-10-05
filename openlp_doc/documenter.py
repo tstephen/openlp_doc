@@ -16,6 +16,7 @@ class DocumenterOptions(BaseModel):
     """options expected by Documenter"""
 
     verbose: int = 2
+    slides: bool = False
 
 
 class Documenter:
@@ -28,6 +29,7 @@ class Documenter:
         self.env = Environment(loader=FileSystemLoader("./openlp_doc/templates"))
         self.song_template = self.env.get_template("serviceitem.html")
         self.service_template = self.env.get_template("service.html")
+        self.slides_template = self.env.get_template("slides.html")
 
     def render_service(self, osj_file: str):
         """render a service from its JSON representation"""
@@ -42,19 +44,34 @@ class Documenter:
                     else:
                         print(f"not a service item: {obj}")
 
-        output = self.service_template.render(service=service, songs=songs)
         out_file = splitext(osj_file)[0]
+        if self.options.slides:
+            output = self.slides_template.render(
+                service=service,
+                songs=songs,
+            )
+            out_file = f"{out_file}_slides"
+        else:
+            output = self.service_template.render(
+                service=service,
+                songs=songs,
+                slides=self.options.slides,
+            )
         with open(f"{out_file}.html", "w") as output_file:
             output_file.write(output)
 
         print(f"HTML generation successful. Output saved to '{out_file}.html'.")
-        pdfkit.from_file(
-            f"{out_file}.html",
-            f"{out_file}.pdf",
-            verbose=True,
-            options={"enable-local-file-access": True},
-        )
-        print(f"PDF generation successful. Output saved to '{out_file}.pdf'.")
+        if not self.options.slides:
+            pdfkit.from_file(
+                f"{out_file}.html",
+                f"{out_file}.pdf",
+                verbose=True,
+                options={
+                    "enable-local-file-access": True,
+                    "orientation": ("Portrait"),
+                },
+            )
+            print(f"PDF generation successful. Output saved to '{out_file}.pdf'.")
         return output
 
     def render_song_json(self, serviceitem: dict):

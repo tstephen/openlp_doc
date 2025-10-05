@@ -32,6 +32,13 @@ def main():
         default=logging.WARNING,
         required=False,
     )
+    parser.add_argument(
+        "--slides",
+        help="output as slides",
+        action="store_true",
+        default=False,
+        required=False,
+    )
     parser.add_argument("service_file", help="increase output verbosity", type=str)
     args = parser.parse_args()
     print(f"Processing file: {args.service_file}")
@@ -41,7 +48,11 @@ def main():
     logging.basicConfig(level=args.verbose, handlers=[ch])
 
     try:
-        documenter = Documenter(DocumenterOptions())
+        options = DocumenterOptions(
+            verbose=args.verbose,
+            slides=args.slides,
+        )
+        documenter = Documenter(options)
         documenter.render_service(args.service_file)
         sys.exit(0)
     except OpenLpException as e:
