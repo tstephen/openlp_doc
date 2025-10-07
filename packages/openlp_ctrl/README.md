@@ -5,7 +5,7 @@ Control interface for OpenLP services and presentations.
 ## Installation
 
 ```bash
-cd projects/openlp_ctrl
+cd packages/openlp_ctrl
 poetry install
 ```
 

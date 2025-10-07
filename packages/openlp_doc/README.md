@@ -39,7 +39,7 @@ This will generate:
 
 ## Templates
 
-The project uses Jinja2 templates located in `openlp_doc/templates/`:
+The package uses Jinja2 templates located in `openlp_doc/templates/`:
 - `service.html` - Main service template
 - `serviceitem.html` - Individual song/item template
 - `slides.html` - Slides presentation template
