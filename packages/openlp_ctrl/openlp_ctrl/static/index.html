@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenLP Control Interface</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <style>
+        .message {
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+            border-left: 4px solid;
+        }
+
+        .message-info {
+            background-color: #eff6ff;
+            border-color: #2563eb;
+            color: #1e40af;
+        }
+
+        .message-success {
+            background-color: #f0fdf4;
+            border-color: #16a34a;
+            color: #15803d;
+        }
+
+        .message-warning {
+            background-color: #fffbeb;
+            border-color: #d97706;
+            color: #a16207;
+        }
+
+        .message-error {
+            background-color: #fef2f2;
+            border-color: #dc2626;
+            color: #b91c1c;
+        }
+
+        .status.connected {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .status.disconnected {
+            color: var(--error-color);
+            font-weight: bold;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>OpenLP Control Interface</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Messages Container -->
+        <div id="messages" class="openlp-messages"></div>
+
+        <!-- Current Slide Display -->
+        <div class="slide-display">
+            <div class="current-slide" id="current-slide">No slide selected</div>
+            <div class="slide-info">
+                Last update: <span id="last-update" class="openlp-last-update">Never</span>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- Connection Panel -->
+            <div class="status-card">
+                <h3>Connection</h3>
+                <div class="form-group">
+                    <label for="client-id">Client ID:</label>
+                    <input type="text" id="client-id" class="form-control openlp-client-id" placeholder="Enter your client ID">
+                </div>
+                <div class="form-group">
+                    <label>Status:</label>
+                    <span id="connection-status" class="status disconnected openlp-connection-status">Disconnected</span>
+                </div>
+                <button id="connect-btn" class="btn openlp-connect-btn">Connect</button>
+                <button id="disconnect-btn" class="btn openlp-disconnect-btn" disabled>Disconnect</button>
+            </div>
+
+            <!-- Slide Control Panel -->
+            <div class="status-card">
+                <h3>Slide Control</h3>
+                <form id="slide-form">
+                    <div class="form-group">
+                        <label for="slide-id">Slide ID:</label>
+                        <input type="text" id="slide-id" class="form-control openlp-slide-id" pattern="\/\d+\/\d+" placeholder="Enter slide ID">
+                    </div>
+                    <button type="button" class="btn btn-success openlp-set-slide-btn">Set Slide</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Server Status -->
+        <div class="clients-list">
+            <h3>
+                Server Status
+                <button id="refresh-status" class="btn openlp-refresh-status" style="float: right; padding: 0.25rem 0.75rem; font-size: 0.875rem;">
+                    Refresh
+                </button>
+            </h3>
+            <p>Connected clients: <strong id="client-count" class="openlp-client-count">0</strong></p>
+            <ul id="connected-clients" class="openlp-connected-clients">
+                <!-- Client list will be populated by JavaScript -->
+            </ul>
+        </div>
+    </div>
+
+    <script src="/static/js/client.js"></script>
+</body>
+</html>

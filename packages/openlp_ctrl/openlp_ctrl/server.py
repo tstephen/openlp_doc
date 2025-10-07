@@ -3,14 +3,23 @@ FastAPI server for OpenLP Control
 """
 
 import json
+import os
+from pathlib import Path
 from typing import Any, Dict
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from .connection_manager import ConnectionManager
 
 app = FastAPI(title="OpenLP Control", version="0.1.0")
+
+# Mount static files
+static_dir = Path(__file__).parent / "static"
+if static_dir.exists():
+    app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 # Global connection manager instance
 manager = ConnectionManager()
@@ -24,7 +33,21 @@ class SlideUpdate(BaseModel):
 
 @app.get("/")
 async def root():
-    """Root endpoint with basic info"""
+    """Serve the main control interface"""
+    html_file = static_dir / "index.html"
+    if html_file.exists():
+        return FileResponse(str(html_file))
+    else:
+        return {
+            "message": "OpenLP Control Server",
+            "version": "0.1.0",
+            "connected_clients": len(manager.get_connected_clients()),
+        }
+
+
+@app.get("/api/info")
+async def api_info():
+    """API endpoint with basic server info"""
     return {
         "message": "OpenLP Control Server",
         "version": "0.1.0",
@@ -83,4 +106,29 @@ async def get_status():
     return {
         "connected_clients": list(manager.get_connected_clients()),
         "total_connections": len(manager.get_connected_clients()),
+    }
+
+
+@app.get("/api/static-files")
+async def list_static_files():
+    """Debug endpoint to list available static files"""
+    if not static_dir.exists():
+        return {"error": "Static directory not found"}
+
+    files = []
+    for file_path in static_dir.rglob("*"):
+        if file_path.is_file():
+            relative_path = file_path.relative_to(static_dir)
+            files.append(
+                {
+                    "path": str(relative_path),
+                    "url": f"/static/{relative_path}",
+                    "size": file_path.stat().st_size,
+                }
+            )
+
+    return {
+        "static_directory": str(static_dir),
+        "files": files,
+        "total_files": len(files),
     }
