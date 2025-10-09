@@ -7,19 +7,17 @@ import os
 from pathlib import Path
 from typing import Any, Dict
 
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import (FastAPI, HTTPException, Request, WebSocket,
+                     WebSocketDisconnect)
 from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from .connection_manager import ConnectionManager
 
 app = FastAPI(title="OpenLP Control", version="0.1.0")
 
-# Mount static files
+# Static directory
 static_dir = Path(__file__).parent / "static"
-if static_dir.exists():
-    app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 # Global connection manager instance
 manager = ConnectionManager()
@@ -31,18 +29,28 @@ class SlideUpdate(BaseModel):
     id: str
 
 
-@app.get("/")
-async def root():
-    """Serve the main control interface"""
-    html_file = static_dir / "index.html"
-    if html_file.exists():
-        return FileResponse(str(html_file))
-    else:
-        return {
-            "message": "OpenLP Control Server",
-            "version": "0.1.0",
-            "connected_clients": len(manager.get_connected_clients()),
-        }
+async def serve_static_file(request_path: str):
+    """Serve static files with automatic .html extension detection"""
+    if not static_dir.exists():
+        raise HTTPException(status_code=404, detail="Static directory not found")
+
+    # Remove leading slash and handle empty path (root)
+    clean_path = request_path.lstrip("/")
+    if not clean_path:
+        clean_path = "index"
+
+    # First try the exact path
+    file_path = static_dir / clean_path
+    if file_path.is_file():
+        return FileResponse(str(file_path))
+
+    # If not found, try with .html extension
+    html_path = static_dir / f"{clean_path}.html"
+    if html_path.is_file():
+        return FileResponse(str(html_path))
+
+    # If still not found, return 404
+    raise HTTPException(status_code=404, detail="File not found")
 
 
 @app.get("/api/info")
@@ -55,7 +63,7 @@ async def api_info():
     }
 
 
-@app.websocket("/connect/{client_id}")
+@app.websocket("/api/connect/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: str):
     """WebSocket endpoint for client connections"""
     await manager.connect(client_id, websocket)
@@ -84,7 +92,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
         manager.disconnect(client_id)
 
 
-@app.post("/set-slide")
+@app.post("/api/set-slide")
 async def set_slide(slide_data: SlideUpdate):
     """Set the current slide and broadcast to all connected clients"""
     try:
@@ -100,7 +108,7 @@ async def set_slide(slide_data: SlideUpdate):
         )
 
 
-@app.get("/status")
+@app.get("/api/status")
 async def get_status():
     """Get server status and connected clients"""
     return {
@@ -132,3 +140,20 @@ async def list_static_files():
         "files": files,
         "total_files": len(files),
     }
+
+
+# Catch-all routes for static files (must be last)
+@app.get("/")
+async def root():
+    """Serve the root path"""
+    return await serve_static_file("")
+
+
+@app.get("/{path:path}")
+async def catch_all(request: Request, path: str):
+    """Catch all non-API routes and serve from static directory"""
+    # Skip API routes
+    if path.startswith("api/"):
+        raise HTTPException(status_code=404, detail="API endpoint not found")
+
+    return await serve_static_file(path)

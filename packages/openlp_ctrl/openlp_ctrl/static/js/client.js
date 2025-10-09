@@ -63,7 +63,7 @@ class OpenLPControlClient {
 
         try {
             const wsUrl = this.serverUrl.replace('http://', 'ws://').replace('https://', 'wss://');
-            this.websocket = new WebSocket(`${wsUrl}/connect/${this.clientId}`);
+            this.websocket = new WebSocket(`${wsUrl}/api/connect/${this.clientId}`);
 
             this.websocket.onopen = () => {
                 this.isConnected = true;
@@ -135,7 +135,7 @@ class OpenLPControlClient {
         }
 
         try {
-            const response = await fetch(`${this.serverUrl}/set-slide`, {
+            const response = await fetch(`${this.serverUrl}/api/set-slide`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ class OpenLPControlClient {
 
     async loadServerStatus() {
         try {
-            const response = await fetch(`${this.serverUrl}/status`);
+            const response = await fetch(`${this.serverUrl}/api/status`);
             if (response.ok) {
                 this.showMessage('Server status refreshed', 'info');
                 const status = await response.json();

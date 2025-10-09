@@ -20,7 +20,7 @@ def test_root_endpoint():
 
 def test_status_endpoint():
     """Test the status endpoint"""
-    response = client.get("/status")
+    response = client.get("/api/status")
     assert response.status_code == 200
     data = response.json()
     assert "connected_clients" in data
@@ -28,8 +28,8 @@ def test_status_endpoint():
 
 
 def test_set_slide_endpoint():
-    """Test the set-slide endpoint"""
-    response = client.post("/set-slide", json={"id": "slide-123"})
+    """Test the api/set-slide endpoint"""
+    response = client.post("/api/set-slide", json={"id": "slide-123"})
     assert response.status_code == 200
     data = response.json()
     assert "message" in data

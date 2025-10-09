@@ -22,7 +22,7 @@ class OpenLPControlClient:
     async def connect(self, client_id: str):
         """Connect to the server with a client ID"""
         self.client_id = client_id
-        websocket_url = f"{self.websocket_url}/connect/{client_id}"
+        websocket_url = f"{self.websocket_url}/api/connect/{client_id}"
 
         try:
             self.websocket = await websockets.connect(websocket_url)
@@ -105,7 +105,7 @@ async def example_set_slide():
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(
-                "http://127.0.0.1:8000/set-slide", json={"id": "slide-42"}
+                "http://127.0.0.1:8000/api/set-slide", json={"id": "slide-42"}
             )
             if response.status_code == 200:
                 print("Slide update sent successfully")
@@ -127,7 +127,7 @@ if __name__ == "__main__":
         async def set_specific_slide():
             async with httpx.AsyncClient() as client:
                 response = await client.post(
-                    "http://127.0.0.1:8000/set-slide", json={"id": slide_id}
+                    "http://127.0.0.1:8000/api/set-slide", json={"id": slide_id}
                 )
                 print(response.json())
 
