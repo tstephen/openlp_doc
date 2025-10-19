@@ -11,7 +11,7 @@
     --border-color: #e2e8f0;
 }
 
-body {
+body.openlp-body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
                  'Helvetica Neue', 'Ubuntu', 'Cantarell', 'Noto Sans', Arial, sans-serif;
     margin: 0;

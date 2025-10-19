@@ -4,29 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{{ title }}</title>
-    <base href="https://knowprocess.com/slides/">
-    <link rel="stylesheet" href="css/reveal.css">
-    <link rel="stylesheet" href="css/theme/black.css">
-
-    <!-- Theme used for syntax highlighting of code -->
-    <link rel="stylesheet" href="lib/css/zenburn.css">
-
-    <!-- Printing and PDF exports -->
-    <script>
-      var link = document.createElement( 'link' );
-      link.rel = 'stylesheet';
-      link.type = 'text/css';
-      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-      document.getElementsByTagName( 'head' )[0].appendChild( link );
-    </script>
-    <style>
-      body {
-        font-family: Helvetica,Roboto,Ubuntu,Calibri,Arial,sans-serif;
-      }
-      section .song-footer {
-        font-size: 0.8rem;
-      }
-    </style>
+    <link rel="stylesheet" href="https://unpkg.com/reveal.js@5.2.1/dist/reset.css">
+    <link rel="stylesheet" href="https://unpkg.com/reveal.js@5.2.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://unpkg.com/reveal.js@5.2.1/dist/theme/black.css">
   </head>
   <body>
     <div class="reveal">
@@ -39,21 +19,21 @@
       </div>
     </div>
 
-    <script src="lib/js/head.min.js"></script>
-    <script src="js/reveal.js"></script>
-
+    <script src="https://unpkg.com/reveal.js@5.2.1/dist/reveal.js"></script>
+    <script src="https://unpkg.com/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+    <script src="https://unpkg.com/reveal.js@5.2.1/plugin/markdown/markdown.js"></script>
+    <script src="https://unpkg.com/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
     <script>
-      // More info about config & dependencies:
-      // - https://github.com/hakimel/reveal.js#configuration
-      // - https://github.com/hakimel/reveal.js#dependencies
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
       Reveal.initialize({
-        dependencies: [
-          { src: 'plugin/markdown/marked.js' },
-          { src: 'plugin/markdown/markdown.js' },
-          { src: 'plugin/notes/notes.js', async: true },
-          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-        ]
+              hash: true,
+
+              // Learn about plugins: https://revealjs.com/plugins/
+              plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
       });
     </script>
+    <script src="/openlp_ctrl/js/client.js"></script>
   </body>
 </html>

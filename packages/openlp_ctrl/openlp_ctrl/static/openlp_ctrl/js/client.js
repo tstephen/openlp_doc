@@ -19,7 +19,11 @@ class OpenLPControlClient {
 
     initializeUI() {
         console.info('Initializing UI');
-        document.querySelector('.openlp-client-id').value = this.clientId;
+        if (!window.location.hash || window.location.hash === '') {
+            window.location.hash = '/0/0';
+        }
+        const clientIdInput = document.querySelector('.openlp-client-id');
+        if (clientIdInput) clientIdInput.value = this.clientId;
 
         this.setupEventListeners();
         this.loadServerStatus();
@@ -43,7 +47,9 @@ class OpenLPControlClient {
         if (slideBtn) {
             slideBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                this.setSlide();
+                const slideIdInput = document.querySelector('.openlp-slide-id');
+                const slideId = slideIdInput ? slideIdInput.value.trim() : undefined;
+                this.setSlide(slideId);
             });
         }
 
@@ -52,6 +58,68 @@ class OpenLPControlClient {
         if (refreshBtn) {
             refreshBtn.addEventListener('click', () => this.loadServerStatus());
         }
+
+        // Setup Reveal.js navigation controls after Reveal.js is ready
+        this.setupRevealNavigation();
+    }
+
+    setupRevealNavigation() {
+        // Wait for Reveal.js to be ready and controls to be created
+        if (typeof Reveal !== 'undefined') {
+            Reveal.on('ready', () => {
+                console.log('Reveal.js is ready, setting up navigation controls');
+                this.attachNavigationListeners();
+            });
+        } else {
+            // Fallback: try again after a short delay if Reveal.js isn't loaded yet
+            setTimeout(() => {
+                if (typeof Reveal !== 'undefined') {
+                    Reveal.on('ready', () => {
+                        console.log('Reveal.js is ready (delayed), setting up navigation controls');
+                        this.attachNavigationListeners();
+                    });
+                } else {
+                    console.warn('Reveal.js not found, navigation controls will not be attached');
+                }
+            }, 1000);
+        }
+    }
+
+    attachNavigationListeners() {
+        // Standard slide controls
+        const navUp = document.querySelector('.navigate-up');
+        if (navUp) {
+            navUp.addEventListener('click', () => this.navigateSlides('up'));
+            console.log('Attached navigate-up listener');
+        } else {
+            console.warn('No navigate-up button found in the DOM.');
+        }
+
+        const navDown = document.querySelector('.navigate-down');
+        if (navDown) {
+            navDown.addEventListener('click', () => this.navigateSlides('down'));
+            console.log('Attached navigate-down listener');
+        } else {
+            console.warn('No navigate-down button found in the DOM.');
+        }
+
+        const navLeft = document.querySelector('.navigate-left');
+        if (navLeft) {
+            navLeft.addEventListener('click', () => this.navigateSlides('left'));
+            console.log('Attached navigate-left listener');
+        } else {
+            console.warn('No navigate-left button found in the DOM.');
+        }
+
+        const navRight = document.querySelector('.navigate-right');
+        if (navRight) {
+            navRight.addEventListener('click', () => this.navigateSlides('right'));
+            console.log('Attached navigate-right listener');
+        } else {
+            console.warn('No navigate-right button found in the DOM.');
+        }
+
+
     }
 
     async connect() {
@@ -112,6 +180,7 @@ class OpenLPControlClient {
             const slideId = message.split(':', 2)[1];
             this.updateCurrentSlide(slideId);
             this.showMessage(`New slide: ${slideId}`, 'info');
+            window.location.hash = slideId;
         } else {
             try {
                 const data = JSON.parse(message);
@@ -124,9 +193,7 @@ class OpenLPControlClient {
         }
     }
 
-    async setSlide() {
-        const slideIdInput = document.querySelector('.openlp-slide-id');
-        const slideId = slideIdInput ? slideIdInput.value.trim() : undefined;
+    async setSlide(slideId) {
         console.log(`Setting slide to: ${slideId}`);
 
         if (!slideId) {
@@ -146,7 +213,10 @@ class OpenLPControlClient {
             if (response.ok) {
                 const result = await response.json();
                 this.showMessage(`Slide set to ${slideId} (${result.clients_notified} clients notified)`, 'success');
-                slideIdInput.value = '';
+                const slideIdInput = document.querySelector('.openlp-slide-id');
+                if (slideIdInput) {
+                    slideIdInput.value = '';
+                }
             } else {
                 this.showMessage('Failed to set slide', 'error');
             }
@@ -257,6 +327,46 @@ class OpenLPControlClient {
             };
             this.websocket.send(JSON.stringify(heartbeat));
         }
+    }
+
+    navigateSlides(navDir) {
+        // Get current hash or default to /0/0
+        let hash = window.location.hash || '#/0/0';
+
+        // Remove the # and split by /
+        const parts = hash.substring(1).split('/');
+
+        // Parse current numbers, default to 0 if invalid
+        let firstNum = parseInt(parts[1]) || 0;
+        let secondNum = parseInt(parts[2]) || 0;
+
+        // Navigate based on direction
+        switch (navDir) {
+            case 'up':
+                firstNum = Math.max(0, firstNum - 1); // Never go below 0
+                break;
+            case 'down':
+                firstNum = firstNum + 1;
+                break;
+            case 'right':
+                secondNum = secondNum + 1;
+                break;
+            case 'left':
+                secondNum = Math.max(0, secondNum - 1); // Never go below 0
+                break;
+            default:
+                console.warn(`Unknown navigation direction: ${navDir}`);
+                return;
+        }
+
+        // Update the hash
+        const newHash = `/${firstNum}/${secondNum}`;
+        window.location.hash = newHash;
+
+        // Also send the slide update to the server
+        this.setSlide(newHash);
+
+        console.log(`Navigated ${navDir}: ${newHash}`);
     }
 }
 
