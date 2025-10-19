@@ -1,23 +1,41 @@
-<section class="song-header">
-  <h1>{{ song.header.title }}</h1>
+<section class="item-header">
+  <h1>{{ item.header.title }}</h1>
 </section>
-{% for verse in song.data %}
-  <section class="verse">
-    <p>{{ verse.raw_slide | replace('\n', '<br>') | replace('{su}', '<sup>') | replace('{/su}', '</sup>') }}</p>
-    {% if loop.last %}
-      <footer class="song-footer">
-        <p>
-          {% for footer in song.header.footer %}
-            {{ footer }}
-          {% endfor %}
-        </p>
-        <p>
-          {% if song.header.data.ccli_number %}
-            <strong>CCLI:</strong>
-            {{ song.header.data.ccli_number }}
-          {% endif %}
-        </p>
-      </footer>
-    {% endif %}
-  </section>
-{% endfor %}
+
+{% if item.header.plugin == 'images' %}
+  {% for image in item.data %}
+    <section class="image">
+      <img src="{{ image.image.parts | join('/') | replace('/thumbnails', '') }}" alt="{{ image.title }}">
+      {% if loop.last %}
+        <footer class="item-footer">
+          <p>
+            {% for footer in item.header.footer %}
+              {{ footer }}
+            {% endfor %}
+          </p>
+        </footer>
+      {% endif %}
+    </section>
+  {% endfor %}
+{% else %}
+  {% for verse in item.data %}
+    <section class="verse">
+      <p>{{ verse.raw_slide | replace('\n', '<br>') | replace('{su}', '<sup>') | replace('{/su}', '</sup>') }}</p>
+      {% if loop.last %}
+        <footer class="item-footer">
+          <p>
+            {% for footer in item.header.footer %}
+              {{ footer }}
+            {% endfor %}
+          </p>
+          <p>
+            {% if item.header.data.ccli_number %}
+              <strong>CCLI:</strong>
+              {{ item.header.data.ccli_number }}
+            {% endif %}
+          </p>
+        </footer>
+      {% endif %}
+    </section>
+  {% endfor %}
+{% endif %}

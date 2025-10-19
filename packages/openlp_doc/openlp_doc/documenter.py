@@ -30,7 +30,7 @@ class Documenter:
 
         template_dir = os.path.join(os.path.dirname(__file__), "templates")
         self.env = Environment(loader=FileSystemLoader(template_dir))
-        self.song_template = self.env.get_template("serviceitem.html")
+        self.item_template = self.env.get_template("serviceitem.html")
         self.service_template = self.env.get_template("service.html")
         self.slides_template = self.env.get_template("slides.html")
 
@@ -39,13 +39,19 @@ class Documenter:
         songs = []
 
         with zipfile.ZipFile(osj_file) as zf:
-            with io.TextIOWrapper(zf.open("service_data.osj"), encoding="utf-8") as f:
+            with io.TextIOWrapper(
+                zf.open("service_data.osj"), encoding="utf-8"
+            ) as f:
                 service = json.load(f)
                 for idx, obj in enumerate(service):
                     if obj.get("serviceitem") is not None:
-                        songs.append(self.render_song_json(obj.get("serviceitem")))
+                        item = obj.get("serviceitem")
+                        print(
+                            f"{idx}: is a service item of type: {item.get('header', {}).get('plugin')}"
+                        )
+                        songs.append(self.render_item_json(item))
                     else:
-                        print(f"not a service item: {obj}")
+                        print(f"{idx}: not a service item: {obj}")
 
         out_file = splitext(osj_file)[0]
         if self.options.slides:
@@ -63,7 +69,9 @@ class Documenter:
         with open(f"{out_file}.html", "w") as output_file:
             output_file.write(output)
 
-        print(f"HTML generation successful. Output saved to '{out_file}.html'.")
+        print(
+            f"HTML generation successful. Output saved to '{out_file}.html'."
+        )
         if not self.options.slides:
             pdfkit.from_file(
                 f"{out_file}.html",
@@ -74,9 +82,11 @@ class Documenter:
                     "orientation": ("Portrait"),
                 },
             )
-            print(f"PDF generation successful. Output saved to '{out_file}.pdf'.")
+            print(
+                f"PDF generation successful. Output saved to '{out_file}.pdf'."
+            )
         return output
 
-    def render_song_json(self, serviceitem: dict):
-        """render a single song from its JSON representation"""
-        return self.song_template.render(song=serviceitem)
+    def render_item_json(self, serviceitem: dict):
+        """render a single service item (song, slide etc.) from OpenLP JSON"""
+        return self.item_template.render(item=serviceitem)

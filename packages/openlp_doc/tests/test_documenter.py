@@ -9,6 +9,7 @@ from os.path import isfile
 from pathlib import Path
 
 import pytest
+
 from openlp_doc.documenter import Documenter, DocumenterOptions
 
 
@@ -23,7 +24,9 @@ def init_documenter():
 
 def test_render_service(documenter):
     """tests known service resource produces expected output"""
-    output = documenter.render_service("./tests/resources/Service 2024-01-28 01-07.osz")
+    output = documenter.render_service(
+        "./tests/resources/Service 2024-01-28 01-07.osz"
+    )
     assert output is not None
     assert isfile("./tests/resources/Service 2024-01-28 01-07.html")
     assert isfile("./tests/resources/Service 2024-01-28 01-07.pdf")
@@ -118,5 +121,5 @@ def test_render_song(documenter):
             "xml_version"
         ].replace("\n", "<br>")
 
-    output = documenter.render_song_json(serviceitem)
+    output = documenter.render_item_json(serviceitem)
     assert output is not None
