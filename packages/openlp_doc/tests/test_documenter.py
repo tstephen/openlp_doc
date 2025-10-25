@@ -24,19 +24,23 @@ def init_documenter():
 
 def test_render_service(documenter):
     """tests known service resource produces expected output"""
-    output = documenter.render_service(
-        "./tests/resources/Service 2024-01-28 01-07.osz"
-    )
+
+    base_path = "./tests/resources/service-2024-01-28"
+    output = documenter.render_service(f"{base_path}.osz")
     assert output is not None
-    assert isfile("./tests/resources/Service 2024-01-28 01-07.html")
-    assert isfile("./tests/resources/Service 2024-01-28 01-07.pdf")
+    assert isfile(f"{base_path}.html")
+    assert isfile(f"{base_path}.pdf")
+
+    # Teardown: remove generated files
+    if os.path.exists(f"{base_path}.html"):
+        os.remove(f"{base_path}.html")
+    if os.path.exists(f"{base_path}.pdf"):
+        os.remove(f"{base_path}.pdf")
 
 
-# @pytest.mark.skip(reason="no way of currently testing this")
 def test_render_song(documenter):
     """tests known song resource produces expected output"""
 
-    # Create the service item data structure directly instead of parsing malformed JSON
     serviceitem = {
         "header": {
             "name": "songs",
