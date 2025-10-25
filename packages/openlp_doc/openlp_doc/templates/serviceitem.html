@@ -5,7 +5,11 @@
 {% if item.header.plugin == 'images' %}
   {% for image in item.data %}
     <section class="image">
-      <img src="{{ image.image.parts | join('/') | replace('/thumbnails', '') }}" alt="{{ image.title }}">
+      {% if image.data_url %}
+        <img src="{{ image.data_url }}" alt="{{ image.title }}">
+      {% else %}
+        <img src="{{ image.image.parts | join('/') | replace('/thumbnails', '') }}" alt="{{ image.title }}">
+      {% endif %}
       {% if loop.last %}
         <footer class="item-footer">
           <p>

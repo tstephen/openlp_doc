@@ -196,6 +196,57 @@ class Imager:
 
         return data_url
 
+    def bytes_to_data_url(
+        self, image_bytes: bytes, file_extension: str
+    ) -> str:
+        """
+        Convert image bytes to a data URL.
+
+        Args:
+            image_bytes: Raw image data as bytes
+            file_extension: File extension to determine MIME type
+
+        Returns:
+            Data URL string
+
+        Raises:
+            ImageError: If the image data is invalid
+        """
+        if not image_bytes:
+            raise ImageError("No image data provided")
+
+        # Check file size
+        if len(image_bytes) > self.max_file_size:
+            raise ImageError(
+                f"Image size ({len(image_bytes)} bytes) exceeds maximum "
+                f"({self.max_file_size} bytes)"
+            )
+
+        # Check file extension
+        suffix = file_extension.lower()
+        if not suffix.startswith("."):
+            suffix = "." + suffix
+
+        if suffix not in self.SUPPORTED_FORMATS:
+            raise ImageError(f"Unsupported image format: {suffix}")
+
+        # Determine MIME type
+        mime_type = self.MIME_TYPES.get(suffix)
+        if not mime_type:
+            raise ImageError(f"Cannot determine MIME type for: {suffix}")
+
+        # Encode as base64
+        base64_data = base64.b64encode(image_bytes).decode("ascii")
+
+        # Create data URL
+        data_url = f"data:{mime_type};base64,{base64_data}"
+
+        log.info(
+            f"Converted image bytes to data URL ({len(base64_data)} chars)"
+        )
+
+        return data_url
+
     def get_image_info(self, source: Union[str, Path]) -> dict:
         """
         Get information about an image without converting it.
