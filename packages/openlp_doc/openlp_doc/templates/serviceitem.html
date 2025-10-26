@@ -4,11 +4,12 @@
 
 {% if item.header.plugin == 'images' %}
   {% for image in item.data %}
-    <section class="image">
+    <section class="image" data-background-image="{{image.data_url if image.data_url else (image.image.parts | join('/') | replace('/thumbnails', '')) }}">
+      <!-- uncomment for images with margin -->
       {% if image.data_url %}
-        <img src="{{ image.data_url }}" alt="{{ image.title }}">
+        <!--img src="{{ image.data_url }}" alt="{{ image.title }}"-->
       {% else %}
-        <img src="{{ image.image.parts | join('/') | replace('/thumbnails', '') }}" alt="{{ image.title }}">
+        <!--img src="{{ image.image.parts | join('/') | replace('/thumbnails', '') }}" alt="{{ image.title }}"-->
       {% endif %}
       {% if loop.last %}
         <footer class="item-footer">
