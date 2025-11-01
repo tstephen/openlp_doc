@@ -22,7 +22,7 @@
       {% endif %}
     </section>
   {% endfor %}
-{% else %}
+{% else %} {#-- supports 'bibles' and 'songs' --#}
   {% for verse in item.data %}
     <section class="verse">
       <p>{{ verse.raw_slide | replace('\n', '<br>') | replace('{su}', '<sup>') | replace('{/su}', '</sup>') }}</p>
