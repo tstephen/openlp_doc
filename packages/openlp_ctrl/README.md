@@ -14,6 +14,8 @@ poetry install
 1. Start server
    ```bash
    poetry run openlp_ctrl
+   # run on privileged port
+   sudo $(which poetry) run openlp_ctrl --port 80 --host 0.0.0.0
    ```
 
 1. Register client (in web page):
