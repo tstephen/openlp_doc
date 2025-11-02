@@ -3,7 +3,6 @@ __main__.py for openlp_ctrl
 """
 
 import argparse
-import logging
 import sys
 
 import uvicorn
@@ -59,6 +58,11 @@ def main():
 
     print(f"Starting OpenLP Control server on {args.host}:{args.port}")
     print("Press Ctrl+C to stop the server")
+
+    # Set server configuration for template rendering
+    from .server import set_server_config
+
+    set_server_config(args.host, args.port)
 
     try:
         uvicorn.run(

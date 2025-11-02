@@ -1,10 +1,12 @@
 /**
  * OpenLP Control - Client Interface JavaScript
+ * Generated from Jinja2 template with server configuration
  */
 
 class OpenLPControlClient {
     constructor() {
-        this.serverUrl = 'http://localhost:8000';
+        // Server URL injected from command line arguments
+        this.serverUrl = 'http://{{ host }}:{{ port }}';
         this.websocket = null;
         this.clientId = `client-${Math.random().toString(36).substr(2, 9)}-${Date.now()}`;
         console.log(`Generated client ID: ${this.clientId}`);
