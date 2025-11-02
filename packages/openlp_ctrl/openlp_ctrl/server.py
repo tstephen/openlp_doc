@@ -3,12 +3,9 @@ FastAPI server for OpenLP Control
 """
 
 import json
-import os
 from pathlib import Path
-from typing import Any, Dict
 
-from fastapi import (FastAPI, HTTPException, Request, WebSocket,
-                     WebSocketDisconnect)
+from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
@@ -32,7 +29,7 @@ class SlideUpdate(BaseModel):
 async def serve_static_file(request_path: str):
     """Serve static files with automatic .html extension detection"""
     if not static_dir.exists():
-        raise HTTPException(status_code=404, detail="Static directory not found")
+        raise HTTPException(status_code=404, detail="Static dir not found")
 
     # Remove leading slash and handle empty path (root)
     clean_path = request_path.lstrip("/")
@@ -98,13 +95,14 @@ async def set_slide(slide_data: SlideUpdate):
     try:
         await manager.broadcast_slide_update(slide_data.id)
         return {
-            "message": f"Slide update sent to all clients",
+            "message": "Slide update sent to all clients",
             "slide_id": slide_data.id,
             "clients_notified": len(manager.get_connected_clients()),
         }
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Failed to broadcast slide update: {str(e)}"
+            status_code=500,
+            detail=f"Failed to broadcast slide update: {str(e)}",
         )
 
 
