@@ -343,16 +343,16 @@ class OpenLPControlClient {
         // Navigate based on direction
         switch (navDir) {
             case 'up':
-                firstNum = Math.max(0, firstNum - 1); // Never go below 0
+                secondNum = Math.max(0, secondNum - 1); // Never go below 0
                 break;
             case 'down':
-                firstNum = firstNum + 1;
+                secondNum += 1;
                 break;
             case 'right':
-                secondNum = secondNum + 1;
+                firstNum += 1;
                 break;
             case 'left':
-                secondNum = Math.max(0, secondNum - 1); // Never go below 0
+                firstNum = Math.max(0, firstNum - 1); // Never go below 0
                 break;
             default:
                 console.warn(`Unknown navigation direction: ${navDir}`);
@@ -366,7 +366,7 @@ class OpenLPControlClient {
         // Also send the slide update to the server
         this.setSlide(newHash);
 
-        console.log(`Navigated ${navDir}: ${newHash}`);
+        console.info(`Navigated ${navDir}: from ${hash} to ${newHash}`);
     }
 }
 
