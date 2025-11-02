@@ -6,6 +6,7 @@ This is a monorepo containing multiple OpenLP-related packages:
 
 * `packages/openlp_doc/`: Transform OpenLP song and service data into web content and PDFs.
 * `packages/openlp_ctrl/`: Client and server to remote control slides
+* `packages/openlp_slides/`: OpenLP export plugin for generating slide presentations
 
 ## Development
 

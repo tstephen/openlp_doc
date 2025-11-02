@@ -1,16 +1,5 @@
 [tool.poetry]
-name = "openlp-doc"
-version = "0.1.0"
-description = "Transform OpenLP song and service data into web content"
-authors = ["Tim Stephenson <tim@knowprocess.com>"]
-license = "GNU General Public License v3 or later"
-readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.11"
-Jinja2 = "^3.1.3"
-pydantic = "^2.6.0"
-pdfkit = "^1.0.0"
+requires-poetry = '>=2.0,<3.0'
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
@@ -18,10 +7,20 @@ coverage = "^7.4.1"
 pre-commit = "^4.3.0"
 pillow = "^12.0.0"
 
-[tool.poetry.scripts]
+[build-system]
+requires = ['poetry-core (>=2.0,<3.0)']
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "openlp-doc"
+description = "Transform OpenLP song and service data into web content"
+license = "GNU General Public License v3 or later"
+version = "0.1.0"
+readme = "README.md"
+authors = [{name = "Tim Stephenson", email = "tim@knowprocess.com"}]
+requires-python = '>=3.11,<4.0'
+dependencies = ['Jinja2 (>=3.1.3,<4.0.0)', 'pydantic (>=2.6.0,<3.0.0)', 'pdfkit (>=1.0.0,<2.0.0)']
+
+[project.scripts]
 openlp_doc = "openlp_doc.__main__:main"
 tests = "scripts:tests"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
