@@ -18,6 +18,11 @@ poetry install
    sudo $(which poetry) run openlp_ctrl --port 80 --host 0.0.0.0
    ```
 
+   Or as docker container
+   ```bash
+   docker run -p 8000:8000 tstephen/openlp_ctrl openlp_ctrl --host 0.0.0.0 --port 8000
+   ```
+
 1. Register client (in web page):
    ```javascript
    const remoteCtrl = document.createElement('a');
