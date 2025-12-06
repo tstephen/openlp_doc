@@ -19,7 +19,7 @@ version = "0.1.0"
 readme = "README.md"
 authors = [{name = "Tim Stephenson", email = "tim@knowprocess.com"}]
 requires-python = '>=3.11,<4.0'
-dependencies = ['Jinja2 (>=3.1.3,<4.0.0)', 'pydantic (>=2.6.0,<3.0.0)', 'pdfkit (>=1.0.0,<2.0.0)']
+dependencies = ['Jinja2 (>=3.1.3,<4.0.0)', 'pydantic (>=2.10.0,<3.0.0)', 'pdfkit (>=1.0.0,<2.0.0)']
 
 [project.scripts]
 openlp_doc = "openlp_doc.__main__:main"
