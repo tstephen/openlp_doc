@@ -183,6 +183,6 @@ jobs:
             --create-namespace \
             --namespace cbc \
             --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
-            --set image.tag=sha-${{ github.sha }} \
+            --set image.tag=latest \
             --wait \
             --timeout 5m
