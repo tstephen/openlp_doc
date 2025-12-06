@@ -16,6 +16,7 @@ on:
   workflow_dispatch:
 
 env:
+  KUBE_CLUSTER: kp-lon1
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}/openlp-ctrl
 
@@ -148,3 +149,40 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to Kubernetes
+    needs: build-and-push-docker
+    runs-on: ubuntu-latest
+    # if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Save DigitalOcean kubeconfig
+        run: |
+          doctl kubernetes cluster kubeconfig save ${{ env.KUBE_CLUSTER }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'latest'
+
+      - name: Deploy to Kubernetes
+        run: |
+          helm upgrade openlp-ctrl ./packages/openlp_ctrl/helm/openlp_ctrl \
+            --install \
+            --create-namespace \
+            --namespace cbc \
+            --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
+            --set image.tag=sha-${{ github.sha }} \
+            --wait \
+            --timeout 5m
