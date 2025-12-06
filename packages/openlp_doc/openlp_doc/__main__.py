@@ -39,7 +39,9 @@ def main():
         default=False,
         required=False,
     )
-    parser.add_argument("service_file", help="increase output verbosity", type=str)
+    parser.add_argument(
+        "service_file", help="increase output verbosity", type=str
+    )
     args = parser.parse_args()
     print(f"Processing file: {args.service_file}")
 

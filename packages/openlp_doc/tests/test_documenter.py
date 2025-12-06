@@ -2,11 +2,9 @@
 test_documenter.py
 """
 
-import json
 import logging
 import os
 from os.path import isfile
-from pathlib import Path
 
 import pytest
 
@@ -24,17 +22,23 @@ def init_documenter():
 
 def test_render_service(documenter):
     """tests known service resource produces expected output"""
-    output = documenter.render_service("./tests/resources/Service 2024-01-28 01-07.osz")
+
+    base_path = "./tests/resources/service-2024-01-28"
+    output = documenter.render_service(f"{base_path}.osz")
     assert output is not None
-    assert isfile("./tests/resources/Service 2024-01-28 01-07.html")
-    assert isfile("./tests/resources/Service 2024-01-28 01-07.pdf")
+    assert isfile(f"{base_path}.html")
+    assert isfile(f"{base_path}.pdf")
+
+    # Teardown: remove generated files
+    if os.path.exists(f"{base_path}.html"):
+        os.remove(f"{base_path}.html")
+    if os.path.exists(f"{base_path}.pdf"):
+        os.remove(f"{base_path}.pdf")
 
 
-# @pytest.mark.skip(reason="no way of currently testing this")
 def test_render_song(documenter):
     """tests known song resource produces expected output"""
 
-    # Create the service item data structure directly instead of parsing malformed JSON
     serviceitem = {
         "header": {
             "name": "songs",
@@ -119,5 +123,78 @@ def test_render_song(documenter):
             "xml_version"
         ].replace("\n", "<br>")
 
-    output = documenter.render_song_json(serviceitem)
+    output = documenter.render_item_json(serviceitem)
     assert output is not None
+
+
+def test_render_image(documenter):
+    """tests image serviceitem produces expected output"""
+
+    serviceitem = {
+        "header": {
+            "name": "images",
+            "plugin": "images",
+            "theme": -1,
+            "title": "sermon",
+            "footer": [],
+            "type": 2,
+            "audit": "",
+            "notes": "",
+            "from_plugin": False,
+            "capabilities": [3, 1, 5, 6, 17, 21, 26],
+            "search": "",
+            "data": "",
+            "xml_version": None,
+            "auto_play_slides_once": False,
+            "auto_play_slides_loop": False,
+            "timed_slide_interval": 0,
+            "start_time": 0,
+            "end_time": 0,
+            "media_length": 0,
+            "background_audio": [],
+            "theme_overwritten": False,
+            "will_auto_start": False,
+            "processor": None,
+            "metadata": [],
+            "sha256_file_hash": None,
+            "stored_filename": None,
+        },
+        "data": [
+            {
+                "title": "01-Luke.png",
+                "image": {
+                    "parts": [
+                        "tests",
+                        "resources",
+                        "images",
+                        "thumbnails",
+                        "e1c6d2ecec7cb3dab4c70b876e3fed24e97007d9f4fc22864e1e3357278fe713.png",
+                    ],
+                    "json_meta": {"class": "Path", "version": 1},
+                },
+                "file_hash": "e1c6d2ecec7cb3dab4c70b876e3fed24e97007d9f4fc22864e1e3357278fe713",
+            },
+            {
+                "title": "02-Luke.png",
+                "image": {
+                    "parts": [
+                        "tests",
+                        "resources",
+                        "images",
+                        "thumbnails",
+                        "87782d28cc0fe15bfbb618ffbc1cdfbd405c2f0b5fa2fa20140433fa486ef1b1.png",
+                    ],
+                    "json_meta": {"class": "Path", "version": 1},
+                },
+                "file_hash": "87782d28cc0fe15bfbb618ffbc1cdfbd405c2f0b5fa2fa20140433fa486ef1b1",
+            },
+        ],
+    }
+
+    output = documenter.render_item_json(serviceitem, None)
+    assert output is not None
+
+    # Verify the output contains expected content
+    assert "01-Luke.png" in output
+    assert "02-Luke.png" in output
+    assert "data:image/png;base64," in output

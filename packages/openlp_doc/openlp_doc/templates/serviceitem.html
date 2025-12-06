@@ -1,0 +1,46 @@
+<section class="item-header">
+  <h1>{{ item.header.title }}</h1>
+</section>
+
+{% if item.header.plugin == 'images' %}
+  {% for image in item.data %}
+    <section class="image" data-background-image="{{image.data_url if image.data_url else (image.image.parts | join('/') | replace('/thumbnails', '')) }}">
+      <!-- uncomment for images with margin -->
+      {% if image.data_url %}
+        <!--img src="{{ image.data_url }}" alt="{{ image.title }}"-->
+      {% else %}
+        <!--img src="{{ image.image.parts | join('/') | replace('/thumbnails', '') }}" alt="{{ image.title }}"-->
+      {% endif %}
+      {% if loop.last %}
+        <footer class="item-footer">
+          <p>
+            {% for footer in item.header.footer %}
+              {{ footer }}
+            {% endfor %}
+          </p>
+        </footer>
+      {% endif %}
+    </section>
+  {% endfor %}
+{% else %} {#-- supports 'bibles' and 'songs' --#}
+  {% for verse in item.data %}
+    <section class="verse">
+      <p>{{ verse.raw_slide | replace('\n', '<br>') | replace('{su}', '<sup>') | replace('{/su}', '</sup>') }}</p>
+      {% if loop.last %}
+        <footer class="item-footer">
+          <p>
+            {% for footer in item.header.footer %}
+              {{ footer }}
+            {% endfor %}
+          </p>
+          <p>
+            {% if item.header.data.ccli_number %}
+              <strong>CCLI:</strong>
+              {{ item.header.data.ccli_number }}
+            {% endif %}
+          </p>
+        </footer>
+      {% endif %}
+    </section>
+  {% endfor %}
+{% endif %}

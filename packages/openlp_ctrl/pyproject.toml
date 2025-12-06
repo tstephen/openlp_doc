@@ -1,0 +1,64 @@
+[project]
+name = "openlp_ctrl"
+version = "0.1.0"
+description = "Control interface for OpenLP"
+license = {text = "GNU General Public License v3 or later"}
+readme = "README.md"
+authors = [
+    {name = "Tim Stephenson", email = "tim@knowprocess.com"}
+]
+requires-python = '>=3.11'
+dependencies = [
+    'pydantic (>=2.6.0,<3.0.0)',
+    'fastapi (>=0.104.0,<0.105.0)',
+    'uvicorn[standard] (>=0.24.0,<0.25.0)',
+    'websockets (>=12.0,<13.0)',
+    "jinja2 (>=3.1.6,<4.0.0)"
+]
+
+[project.scripts]
+openlp_ctrl = "openlp_ctrl.__main__:main"
+
+[tool.poetry]
+requires-poetry = '>=2.0,<3.0'
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+pytest-cov = "^4.1.0"
+coverage = "^7.4.1"
+pre-commit = "^4.3.0"
+httpx = "^0.25.0"
+
+[tool.poetry.scripts]
+openlp_ctrl = "openlp_ctrl.__main__:main"
+test = "scripts:test"
+
+[build-system]
+requires = ['poetry-core (>=2.0,<3.0)']
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
+[tool.poetry.requires-plugins]
+poetry-docker-plugin = ">=0.6.0"
+
+[tool.docker]
+from = "python:3.11-slim"
+tags = [
+    "tstephen/openlp_ctrl:0.1.0",
+    "tstephen/openlp_ctrl:latest",
+]
+expose = [8000]
+cmd = ["openlp_ctrl", "--host", "0.0.0.0", "--port", "8000"]
