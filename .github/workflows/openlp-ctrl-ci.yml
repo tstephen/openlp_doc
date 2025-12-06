@@ -110,6 +110,8 @@ jobs:
     name: Build and Push Docker Image
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      sha_tag: ${{ steps.sha-tag.outputs.sha_tag }}
     permissions:
       contents: read
       packages: write
@@ -150,6 +152,11 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Extract SHA tag for deployment
+        id: sha-tag
+        run: |
+          echo "sha_tag=sha-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
   deploy:
     name: Deploy to Kubernetes
     needs: build-and-push-docker
@@ -183,6 +190,6 @@ jobs:
             --create-namespace \
             --namespace cbc \
             --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
-            --set image.tag=latest \
+            --set image.tag=${{ needs.build-and-push-docker.outputs.sha_tag }} \
             --wait \
             --timeout 5m
