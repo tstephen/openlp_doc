@@ -3,9 +3,11 @@ FastAPI server for OpenLP Control
 """
 
 import json
+import os
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response
 from jinja2 import Environment, FileSystemLoader
 from pydantic import BaseModel
@@ -13,6 +15,20 @@ from pydantic import BaseModel
 from .connection_manager import ConnectionManager
 
 app = FastAPI(title="OpenLP Control", version="0.1.0")
+
+# Read CORS origins from environment variable, default to all origins for development
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "*")
+# Split by comma if multiple origins are provided
+allowed_origins = [origin.strip() for origin in allowed_origins_env.split(",")]
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 static_dir = Path(__file__).parent / "static"
 templates_dir = Path(__file__).parent / "templates"

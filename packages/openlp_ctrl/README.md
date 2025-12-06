@@ -47,3 +47,15 @@ poetry install
    curl -X POST -H 'Content-Type: application/json' -d '{"id": "123"}' http://localhost:8000/api/set-slide
    {"message":"Slide update sent to all clients","slide_id":"123","clients_notified":1}(openlp-doc-py3.12)
    ```
+
+## Deploy to Kubernetes
+
+1. Allow K8s to pull from GitHub Container Registry (GHCR)
+
+   ```
+   kubectl create secret docker-registry ghcr-login-secret \
+     --docker-server=ghcr.io \
+     --docker-username=$USER \
+     --docker-password=$GH_PAT_K8S \
+     --docker-email=$USER_MAIL \
+     --namespace=cbc
