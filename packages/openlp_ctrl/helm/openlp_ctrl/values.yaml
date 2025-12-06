@@ -2,6 +2,15 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# Application configuration
+config:
+  # CORS allowed origins (comma-separated for multiple origins)
+  allowedOrigins: "https://openlp-ctrl.knowprocess.com"
+  # Server host to bind to (0.0.0.0 for all interfaces in container)
+  serverHost: "0.0.0.0"
+  # Server port
+  serverPort: "8000"
+
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
 replicaCount: 1
 

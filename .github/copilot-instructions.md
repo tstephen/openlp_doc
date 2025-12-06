@@ -62,3 +62,23 @@ For Dockerfile:
 - Each package in `packages/` has its own `pyproject.toml`
 - Root `pyproject.toml` defines workspace dependencies
 - Always specify working directory when running commands in specific packages
+
+## Kubernetes / Helm Chart Guidelines
+
+### Helm Template Naming Conventions
+- **ALWAYS use hyphens (kebab-case)** in Helm template function names
+- **NEVER use underscores** in template includes or defines
+- Check `_helpers.tpl` for the correct naming convention before creating new templates
+
+#### Examples:
+- ✅ `{{ include "openlp-ctrl.fullname" . }}`
+- ✅ `{{ include "openlp-ctrl.labels" . }}`
+- ✅ `{{ include "openlp-ctrl.selectorLabels" . }}`
+- ❌ `{{ include "openlp_ctrl.fullname" . }}` - WRONG
+- ❌ `{{ include "openlp_ctrl.labels" . }}` - WRONG
+
+### Helm Chart Structure
+- Chart location: `packages/openlp_ctrl/helm/openlp_ctrl/`
+- Template helpers defined in: `templates/_helpers.tpl`
+- Configuration values in: `values.yaml`
+- When creating new templates, always reference existing helpers from `_helpers.tpl`

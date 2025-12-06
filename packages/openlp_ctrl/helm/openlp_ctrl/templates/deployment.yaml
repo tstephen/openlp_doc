@@ -44,6 +44,9 @@ spec:
             - name: http
               containerPort: 8000
               protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "openlp-ctrl.fullname" . }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
