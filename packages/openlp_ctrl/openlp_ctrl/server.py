@@ -37,19 +37,17 @@ templates_dir = Path(__file__).parent / "templates"
 manager = ConnectionManager()
 
 # Global server configuration (will be set by main)
-SERVER_HOST = "127.0.0.1"
-SERVER_PORT = 8000
+SERVER_URL = "http://127.0.0.1:8000"
 
 # Initialize Jinja2 environment
 jinja_env = Environment(loader=FileSystemLoader(str(templates_dir)))
 templates_dir = Path(__file__).parent / "templates"
 
 
-def set_server_config(host: str, port: int):
+def set_server_config(url: str):
     """Set the server configuration for template rendering"""
-    global SERVER_HOST, SERVER_PORT
-    SERVER_HOST = host
-    SERVER_PORT = port
+    global SERVER_URL
+    SERVER_URL = url
 
 
 class SlideUpdate(BaseModel):
@@ -63,7 +61,7 @@ async def get_templated_client_js():
     """Serve the templated client.js with injected server configuration"""
     try:
         template = jinja_env.get_template("client.js.j2")
-        rendered_js = template.render(host=SERVER_HOST, port=SERVER_PORT)
+        rendered_js = template.render(server_url=SERVER_URL)
         return Response(content=rendered_js, media_type="application/javascript")
     except Exception as e:
         raise HTTPException(

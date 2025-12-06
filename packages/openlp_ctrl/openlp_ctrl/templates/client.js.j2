@@ -6,7 +6,8 @@
 class OpenLPControlClient {
     constructor() {
         // Server URL injected from command line arguments
-        this.serverUrl = 'http://{{ host }}:{{ port }}';
+        this.serverUrl = '{{  server_url }}';
+        console.log(`Configured server URL: ${this.serverUrl}`);
         this.websocket = null;
         this.clientId = `client-${Math.random().toString(36).substr(2, 9)}-${Date.now()}`;
         console.log(`Generated client ID: ${this.clientId}`);

@@ -6,5 +6,4 @@ metadata:
     {{- include "openlp-ctrl.labels" . | nindent 4 }}
 data:
   ALLOWED_ORIGINS: {{ .Values.config.allowedOrigins | quote }}
-  SERVER_HOST: {{ .Values.config.serverHost | quote }}
-  SERVER_PORT: {{ .Values.config.serverPort | quote }}
+  SERVER_URL: {{ .Values.config.serverUrl | quote }}

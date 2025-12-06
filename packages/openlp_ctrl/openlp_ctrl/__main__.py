@@ -60,9 +60,16 @@ def main():
     print("Press Ctrl+C to stop the server")
 
     # Set server configuration for template rendering
+    import os
+
     from .server import set_server_config
 
-    set_server_config(args.host, args.port)
+    # Read server URL from environment variable if set
+    server_url = os.getenv("SERVER_URL")
+    if server_url:  # useful for k8s deployment
+        set_server_config(server_url)
+    else:  # usefulf for local testing
+        set_server_config(f"http://{args.host}:{args.port}")
 
     try:
         uvicorn.run(

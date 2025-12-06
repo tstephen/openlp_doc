@@ -5,11 +5,9 @@
 # Application configuration
 config:
   # CORS allowed origins (comma-separated for multiple origins)
-  allowedOrigins: "https://openlp-ctrl.knowprocess.com"
-  # Server host to bind to (0.0.0.0 for all interfaces in container)
-  serverHost: "0.0.0.0"
-  # Server port
-  serverPort: "8000"
+  allowedOrigins: "https://knowprocess.com"
+  # Server Url for client to connect to
+  serverUrl: "http://openlp-ctrl.knowprocess.com"
 
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
 replicaCount: 1
