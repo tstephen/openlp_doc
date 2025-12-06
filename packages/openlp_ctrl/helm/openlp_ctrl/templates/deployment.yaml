@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "openlp_ctrl.fullname" . }}
+  name: {{ include "openlp-ctrl.fullname" . }}
   labels:
-    {{- include "openlp_ctrl.labels" . | nindent 4 }}
+    {{- include "openlp-ctrl.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "openlp_ctrl.selectorLabels" . | nindent 6 }}
+      {{- include "openlp-ctrl.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "openlp_ctrl.labels" . | nindent 8 }}
+        {{- include "openlp-ctrl.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -27,7 +27,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "openlp_ctrl.serviceAccountName" . }}
+      serviceAccountName: {{ include "openlp-ctrl.serviceAccountName" . }}
       {{- with .Values.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "openlp_ctrl.fullname" . }}
+  name: {{ include "openlp-ctrl.fullname" . }}
   labels:
-    {{- include "openlp_ctrl.labels" . | nindent 4 }}
+    {{- include "openlp-ctrl.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "openlp_ctrl.selectorLabels" . | nindent 4 }}
+    {{- include "openlp-ctrl.selectorLabels" . | nindent 4 }}

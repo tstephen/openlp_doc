@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "openlp_ctrl.fullname" . }}
+  name: {{ include "openlp-ctrl.fullname" . }}
   labels:
-    {{- include "openlp_ctrl.labels" . | nindent 4 }}
+    {{- include "openlp-ctrl.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "openlp_ctrl.fullname" . }}
+    name: {{ include "openlp-ctrl.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
