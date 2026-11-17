@@ -33,7 +33,7 @@ env:
 jobs:
   schedule_gate:
     name: Decide deployment eligibility
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       run_deploy: ${{ steps.last-saturday.outputs.run_deploy }}
     steps:
@@ -52,7 +52,7 @@ jobs:
 
   test:
     name: Run Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       pull-requests: write
@@ -131,7 +131,7 @@ jobs:
   build-and-push-docker:
     name: Build and Push Docker Image
     needs: [test, schedule_gate]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       sha_tag: ${{ steps.sha-tag.outputs.sha_tag }}
     permissions:
@@ -188,7 +188,7 @@ jobs:
   deploy:
     name: Deploy to Kubernetes
     needs: [build-and-push-docker, schedule_gate]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: ${{ needs.schedule_gate.outputs.run_deploy == 'true' }}
     permissions:
       contents: read
