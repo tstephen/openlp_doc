@@ -1,17 +1,30 @@
 # OpenLP helpers
 
-This is a monorepo containing multiple OpenLP-related packages:
+This is a monorepo containing multiple OpenLP-related Poetry packages:
 
 ## Packages
 
 * `packages/openlp_doc/`: Transform OpenLP song and service data into web content and PDFs.
-* `packages/openlp_ctrl/`: Client and server to remote control slides
-* `packages/openlp_slides/`: OpenLP export plugin for generating slide presentations
+* `packages/openlp_ctrl/`: Client and server to remotely control slides.
+* `packages/openlp_slides/`: Reserved for the OpenLP export plugin; add it under this directory when available.
 
 ## Development
 
-Each package manages its own dependencies using Poetry. To work on a specific package:
+The repository has a root Poetry environment with editable path dependencies for the packages.
 
-1. Navigate to the package directory
-2. Run `poetry install` to install dependencies
-3. Use `poetry run <package>` to execute package commands
+```bash
+poetry install --with dev
+poetry run pytest packages/openlp_ctrl/tests packages/openlp_doc/tests
+poetry build
+```
+
+To build or test an individual package, run its commands from that package directory:
+
+```bash
+cd packages/openlp_ctrl
+poetry install --with dev
+poetry run test
+poetry build
+```
+
+The GitHub Actions workflow tests and builds every package that contains a `pyproject.toml`.
