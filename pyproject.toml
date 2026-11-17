@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "openlp-monorepo"
-version = "0.1.0"
+version = "0.1.1"
 description = "Monorepo for OpenLP helper applications"
 authors = ["Tim Stephenson <tim@knowprocess.com>"]
 package-mode = false
